@@ -1,0 +1,619 @@
+var xmlHttp;
+
+	try {
+		xmlHttp=new XMLHttpRequest();
+
+
+	}
+	catch(e) {
+		var XmlHttpVersions=new Array('MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0', 'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP');
+		
+		for(var i=0; i<XmlHttpVersions.length && !xmlHttp; i++) {
+			try {
+				xmlHttp = new ActiveXObject(XmlHttpVersions[i]);
+
+			
+			}
+			catch(e) {}
+		}
+	}
+
+	if(!xmlHttp) alert("Ошибка создания объекта XMLHttpRequest.");
+
+
+
+function number_format (number, decimals, dec_point, thousands_sep) {
+
+    number = (number + '').replace(',', '').replace(' ', '');
+    var n = !isFinite(+number) ? 0 : +number,
+        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+        s = '',
+        toFixedFix = function (n, prec) {
+            var k = Math.pow(10, prec);
+            return '' + Math.round(n * k) / k;
+        };
+    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+        s[1] = s[1] || '';
+        s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+} 
+
+
+function savesum(kvo,ids) {
+	
+var zapros="id="+ids+"&kvo="+kvo;
+
+	if(xmlHttp) {	
+	//showtimer();
+	if(xmlHttp.readyState==4 || xmlHttp.readyState==0) {
+		xmlHttp.open("POST", "/savesum.php", true);
+		xmlHttp.onreadystatechange=handleServerResponse637;
+		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlHttp.send(zapros);	
+	}
+	else setTimeout('savesum('+kvo+',"'+ids+'")', 1000);
+			}
+}
+function handleServerResponse637() {
+if(xmlHttp.readyState==4) {
+		if(xmlHttp.status==200) {
+			response = xmlHttp.responseText;
+		
+	}
+		else setTimeout('handleServerResponse637()', 500);
+	}
+}
+
+
+
+function savesizes(kvo,ids) {
+	
+var zapros="id="+ids+"&kvo="+kvo;
+	
+	if(xmlHttp) {	
+	//showtimer();
+	if(xmlHttp.readyState==4 || xmlHttp.readyState==0) {
+		xmlHttp.open("POST", "/savesizes.php", true);
+		xmlHttp.onreadystatechange=handleServerResponse22;
+		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlHttp.send(zapros);	
+	}
+	else setTimeout('savesizes('+kvo+','+ids+')', 1000);
+			}
+}
+function handleServerResponse22() {
+if(xmlHttp.readyState==4) {
+		if(xmlHttp.status==200) {
+			response = xmlHttp.responseText;
+		      location.reload();
+	}
+		else setTimeout('handleServerResponse22()', 500);
+	}
+}
+
+
+function closewin() {$('#window').attr('class','hhde');$('#window').html('');}
+
+function sortirovka(page,sor) {
+    location.href='/index.php?lan='+lan+'&page='+page+'&sort='+sor;
+}
+function zabil() {
+    
+var word1=''; var word2=''; var word3='';    
+
+word1='Recovery';
+word2='Enter your registration E-mail';
+word3='Submit';
+
+    
+     var vhh='<div class="fl"><big>'+word1+'</big></div><div class="fr"><span class="close" onclick="closewin()"><i class="far fa-times-circle"></i></span></div><div class="cl"></div>';
+    
+    vhh+='<form method="post" action="">';
+    
+    vhh+='<p>'+word2+'<br /><input type="email" required="" name="myemail" value="" class="field" /></p>';
+    vhh+='<p align="center"><input type="submit" value="'+word3+'" class="btn" /></p></form>';
+    
+    document.getElementById('window').innerHTML=vhh;
+    $('#window').attr('class','hhdw');
+}
+
+function addtocard(ids,page,tovarid,lan) {
+   
+    //Проверяем выбран ли размер
+    var zapros="lan="+lan+"&id="+ids+"&page="+page+"&tovarid="+tovarid+"&kvo="+$('#amount'+ids).html();
+    
+    if(document.getElementById('weight'+ids)) {
+      
+        zapros+="&sizes="+$('#weight'+ids+' option:selected').attr('label');
+    }
+    
+
+
+	if(xmlHttp) {	
+	if(xmlHttp.readyState==4 || xmlHttp.readyState==0) {
+		xmlHttp.open("POST", "/addtocard.php", true);
+		xmlHttp.onreadystatechange=handleServerResponse101;
+		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlHttp.send(zapros);	
+	}
+	else setTimeout('addtocard('+ids+',"'+page+'","'+tovarid+'","'+lan+'")', 1000);
+			}
+           
+            
+}
+
+function handleServerResponse101() {
+if(xmlHttp.readyState==4) {
+		if(xmlHttp.status==200) {
+			response = xmlHttp.responseText;
+       
+        var rara=response.split('^^');
+var word1='';
+
+   if(rara[1]=='en') word1='Go to shopping cart';
+   if(rara[1]=='ar') word1='اذهب إلى عربة التسوق';
+        
+        
+        
+document.getElementById('modas'+rara[0]).innerHTML='<a href="/'+rara[1]+'/korzina" class="btn">'+word1+' <i class="fas fa-angle-right"></i></a>';
+
+
+$('#hlopak').html(rara[3]+' - '+rara[2]);
+
+            
+	}
+		else setTimeout('handleServerResponse101()', 500);
+	}
+}   
+
+
+
+function enters(){
+    
+    //if($("#remember").is(':checked')) var remember=1;
+    //else remember=0;
+    
+$.ajax({
+        
+  type: 'POST',
+  url: '/bagenter.php',
+  data: 'login='+document.getElementById('lolo1').value+'&pass='+document.getElementById('lolo2').value+'&remember=0',
+  beforeSend: function() {
+      $('#nemo').html('<p class="ac"><img src="/images/loading.gif"></p>');
+      },
+  success: function(data) {
+   
+    var mas='';
+    if(lan=='en') mas='Incorrect login or password';
+    else mas='تسجيل الدخول أو كلمة سر خاطئة';
+    
+    if(data=='net') {$('#nemo').html('<div class="net">'+mas+'</div>'); $('#cccc1').css('display','block');}
+    else location.reload();
+  
+                         }
+});
+    
+}
+
+
+$(document).ready(function(){
+	
+    if(document.getElementById('himka')) {
+        $('#himka').submit();
+    }
+    
+    var dlina = $(window).width();
+    var vysota = $(window).height();
+     
+    $(window).resize(function() {
+          dlina = $(window).width();
+          vysota = $(window).height();
+          
+          
+    });
+    
+    
+     
+        
+      if(dlina<=990) {
+        $('span.header').click(function(){
+            
+            
+            if($('ul.ulcat').css('display')=='none') {
+                $('ul.ulcat').fadeIn(300);
+            } else {
+                $('ul.ulcat').fadeOut(300);
+            }
+            
+        });
+      } else {
+        $('.hiden').click(function(){
+            
+            
+            if($('ul.ulcat').css('display')=='none') {
+                $('ul.ulcat').fadeIn(300);
+            } else {
+                $('ul.ulcat').fadeOut(300);
+            }
+            
+        });
+      }
+  
+  $('#window, .signupform').on('change','select[name="period"]',function(){
+    
+    var idb = parseInt($(this).val());
+    if(idb==1) {
+        $('#days, #days1').fadeOut();
+    }
+    if(idb==2) {
+        $('#days1').fadeOut(); $('#days').fadeIn();
+    }
+    if(idb==3) {
+        $('#days').fadeOut(); $('#days1').fadeIn();
+    }
+    
+  });
+  
+  //показываем форму подписки на автооплату
+  $('.subscribes').click(function(){
+    
+  var id = parseInt($(this).attr('data-label'));  
+  var weight = $('#weight'+id+' option:selected').text();
+    
+var vhh='<div class="fl"><big>Add to subscription</big></div><div class="fr"><span class="close" onclick="closewin()"><i class="far fa-times-circle"></i></span></div><div class="cl"></div>';
+    
+    vhh+='<form method="post" action="/'+lan+'/area/lk-subscription">'+
+    
+    '<p>Weight<br /><input type="text" class="field" required="" name="weight" value="'+weight+'" /></p>'+
+    
+    '<p>Amount<br /><input type="text" class="field" required="" name="amount" value="'+$('#amount'+id).text()+'" /></p>'+
+    
+    '<p><input type="hidden" name="productid" value="'+id+'"/><input type="hidden" name="productprice" value="'+$('#weight'+id).val()+'"/></p>';
+
+var data='';
+
+   //выбираем существующие планы подписки
+   $.ajax({
+        
+  type: 'POST',
+  url: '/selectsubscriptionplans.php',
+  data: data,
+  beforeSend: function() {},
+  success: function(data) {
+    
+    vhh+=data;
+    vhh+='<p><input type="submit" value="Add" name="pinras" class="btn orange" /></p></form>';
+    
+    
+    $('#window').html(vhh);
+    $('#window').attr('class','hhdw');
+  }
+});
+    
+
+   
+ 
+   return false; 
+  });
+  
+  $('.showmap, span.zakr').click(function(){
+    
+    var dsp = $('#karta').css('display');
+    if(dsp == 'none') {
+        $('#karta').fadeIn(200,function(){
+            $('#karta').toggleClass('kartaact');    
+        });
+    } else {
+        $('#karta').fadeOut(200,function(){
+            $('#karta').toggleClass('kartaact');
+        });
+    }
+    
+});
+  
+     
+     $('#area span').click(function(){
+        
+        $('#idf').val($(this).text());
+        $('#address').val($(this).attr('data-label'));
+        $('.dd input[type="checkbox"]').prop('checked',false);
+        
+        
+     });
+     
+     $('#addanew').click(function(){
+        
+        if(lan=='en') {var word1='Name of the place';}
+        else {var word1='اسم المكان';}
+        
+         var zagotovka = '<input type="text" name="addr[]" class="field" placeholder="'+word1+'" />';
+    
+    var holder = document.getElementById( "openap" );
+
+table3=document.createElement("div");
+table3.setAttribute( 'class', 'par' );
+holder.appendChild(table3);
+        
+    table3.innerHTML=zagotovka;
+        
+     });
+     
+     //проверяем на совпадение пароля
+     $('#pass2').blur(function(){
+        if($(this).val()!=$('#pass1').val()) { alert('Passwords does not match.'); $(this).val('');}
+     });
+     
+     //отображаем/скрываем поля
+     $('.signupform select[name="grupa"]').change(function(){
+        
+        
+        
+        if($(this).val()==1) $('.hiden').fadeIn(200);
+        else {
+            $('.hiden').fadeOut(200);
+            $('select[name="corporationtype"]').val('0');
+            $('[name="company"], [name="documents"]').val('');
+        }
+        
+     });
+   
+   //проверка промо-кода
+     $('#getpromo').click(function(){
+        
+        var promocode = $('input[name="promocode"]').val();
+        if(promocode!='') {
+        $.ajax({
+        
+  type: 'POST',
+  url: '/checkpromocode.php',
+  data: 'promocode='+promocode,
+  beforeSend: function() {
+      $('#kep').fadeOut();
+      $('.resulty').html('<p><img src="/images/loading.gif"></p>');
+      },
+  success: function(data) {
+   
+  if(data=='net') {
+        $('.resulty').html('<p>This promo code already used or wrong. Try an other code.</p>');
+        $('#kep').fadeIn();
+  } else {
+    data=parseInt(data);
+        $('.resulty').html('<p>Your discount is '+data+'%. Total price changed.</p>');
+        var totalprice = parseFloat($('#totalprice').val());
+        totalprice = totalprice-totalprice*data/100;
+        
+        $('span.itogo').text('AED '+number_format(totalprice,2,'.',','));
+  }
+  
+                         }
+});
+        }
+     });
+     
+     //подписка на рассылку
+     $('#subs').click(function(){
+        
+        $.ajax({
+        
+  type: 'POST',
+  url: '/subscribe.php',
+  data: 'email='+$('input[name="subscriber"]').val(),
+  beforeSend: function() {
+      //$('.subscription .border').html('<img src="/images/loading.gif" />');
+      },
+  success: function(data) {
+   
+  var mas='<div class="fl"><big></big></div><div class="fr"><span class="close" onclick="closewin()"><i class="far fa-times-circle"></i></span></div><div class="cl"></div>';
+    
+    alert(data);
+    
+    if(data=='ok') {
+        if(lan=='en') mas+='You need to check your Email and confirm subscription';
+        else mas+='تحتاج إلى التحقق من البريد الإلكتروني الخاص بك وتأكيد الاشتراك';
+    }
+    else {
+        if(lan=='en') mas+='That Email address already registered';
+        else mas+='عنوان البريد الإلكتروني هذا مسجل بالفعل'; 
+    }
+    
+    $('#window').html(mas);
+    $('#window').attr('class','hhdw');
+  
+                         }
+});
+        
+     });
+     
+     
+     //меняем цену в зависимости от выбранного веса
+     $('[id^="weight"]').change(function(){
+        var price = $(this).val()
+        //alert($(this+':selected').attr('label'));
+        
+        var ids = $(this).attr('id');
+        
+        ids=ids.replace(/weight/gi, '');
+//alert(price);
+  
+        $('#setprice'+ids).text('AED '+price);
+        
+        
+     });
+     
+     
+     $('span.minus').click(function(){
+        
+        var chislo = parseInt($(this).next().html())-1;
+        
+        if(chislo<1) chislo=1;
+        
+        $(this).next().html(chislo);
+        
+     });
+     $('span.plus').click(function(){
+        
+        var chislo = parseInt($(this).prev().html())+1;
+        $(this).prev().html(chislo);
+        
+     });   
+     
+     
+     
+     //выполняем пересчёт корзины
+     $('span[id^="minus_"], span[id^="plus_"]').click(function(){
+        
+        var ids = $(this).attr('id');
+       
+       ids=ids.replace(/minus_/gi, '');
+       ids=ids.replace(/plus_/gi, '');
+        
+       var count = $('#amount_'+ids).html();
+       
+       savesum(count,$('[id="uniqid_'+ids+'"]').val());
+       
+       var innitialprice = $('#price_'+ids).val();
+        
+       var suma = innitialprice*count;
+       suma=number_format(suma, 2, '.', '');
+       
+       $('#total_'+ids).html('AED '+suma);
+       
+       //выбираем все суммы
+       var total = 0;
+       
+       $sumy = $('[id^="total_"]');
+       $sumy.each(function(){
+        
+            var vals = this.innerHTML;
+            vals=vals.replace(/AED /gi, '');
+            vals = parseFloat(vals);
+            total+=vals;
+            
+       });
+       $('.total').html('AED '+number_format(total, 2, '.', ''));
+       
+       if(document.getElementById('discount')) {
+            var disc = parseFloat($('#discount').val())*total;
+            disc = number_format(disc, 2, '.', '');
+            $('.discount').html('AED '+disc);
+       }
+       
+       var itogo = total - disc;
+       itogo = number_format(itogo, 2, '.', '');
+       $('.itogo').html('AED '+itogo);
+        
+     });
+     
+     
+     $('#onmap').click(function(){
+        
+        $('div.padd').fadeOut(300);
+        
+     });
+     $('.goback').click(function(){
+        
+        $('div.padd').fadeIn(300);
+        
+     });
+     
+     $('span[class^="levo"]').click(function(){
+       
+       var kio = $(this).attr('class');
+       var nm = $(this).attr('title');
+       
+       if($('#'+kio).css('display')=='none') {
+        
+         $(this).html(nm+' <i class="fas fa-angle-up"></i>');
+        
+       }
+       else{
+        $(this).html(nm+' <i class="fas fa-angle-down"></i>');
+        
+       }
+       
+       
+        $('#'+kio).toggle('fast');
+       
+        
+    });
+     
+      
+     
+     $('.bars, .closelabel').click(function(){
+            
+            var wd = parseInt($('nav').css('width'));
+            
+            if(wd==0) {
+                $('nav').css('width','280px');
+                $('.closelabel').css('left','280px');   
+            } else {
+                $('nav').css('width','0');
+                $('.closelabel').css('left','-60px'); 
+            }
+            
+            
+            
+            
+        });
+    
+    
+      
+    $('.login, #cccc1').click(function(event){
+   var lan='en';
+   var ids=this.id;
+
+        var word1='Members area';
+        var word2='Password';
+        var word3='Forgot password?';
+        var word4='Sign In';
+        var word5='Sign Up';
+        var word6='Remember me for the next time';
+    
+    var vhh1='<div class="fl"><big>'+word1+'</big></div><div class="fr"><span class="close" onclick="closewin()"><i class="far fa-times-circle"></i></span></div><div class="cl"></div>';
+    
+    vhh1+='<form method="post" action="">';
+    
+    vhh='<p>E-mail<br /><input type="text" class="field" id="lolo1" autocomplete="off" name="login" value="" /></p>';
+    vhh+='<p>'+word2+' (<span style="cursor:pointer" onclick="zabil()">'+word3+'</span>)<br /><input type="password" id="lolo2" class="field" name="pass" value="" /></p>';
+
+   vhh2='<p align="center"><input type="submit" value="'+word4+'" name="auth" class="btn orange" /></p></form>';
+    
+    if(ids=='cccc1') {
+       
+    $('#nemo').html(vhh+'<p align="center"><input type="button" value="'+word4+'" onclick="enters()" id="enter" class="btn" /></p>');
+    $(this).css('display','none');
+ 
+ } else {
+    
+    $('#window').html(vhh1+vhh+vhh2);
+    $('#window').attr('class','hhdw');
+ }
+    
+ return false;
+   }); 
+    
+    
+     $('.callback').click(function(event){
+   
+    var vhh='<div class="fl big">Заказать звонок</div><div class="fr"><span class="close" onclick="closewin()"><i class="far fa-times-circle"></i></span></div><div class="cl"></div>';
+    
+    vhh+='<form method="post" action="">';
+    
+    vhh+='<p><input type="text" class="field1" required="" placeholder="Ваше имя" name="myname" /></p>';
+    vhh+='<p><input type="text" class="field1" required="" placeholder="Контактный телефон" name="myphone" /></p>';
+     vhh+='<p class="ac"><input type="submit" value="Отправить" class="btn red" /></p></form>';
+    
+    $('#window').html(vhh);
+    $('#window').attr('class','hhdw');  
+ 
+   });			
+              
+});         
